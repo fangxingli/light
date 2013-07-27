@@ -17,4 +17,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <color name="text_color">#009933</color>
+    <color name="gap_line_color">#009933</color>
+    <color name="main_background">#333333</color>
 </resources>

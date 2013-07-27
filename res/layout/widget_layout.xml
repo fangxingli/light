@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@string/gap_line_color"
+    android:background="@color/gap_line_color"
     android:paddingTop="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
     
     <LinearLayout 
-        android:background="@string/main_background"
+        android:background="@color/main_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -17,9 +17,16 @@
         <TextView 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@string/text_color"
+            android:textColor="@color/text_color"
             android:text="Lighter"
             android:textSize="15sp"
+            />
+        <Button 
+            android:id="@+id/up_arrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:attr/buttonStyleSmall"
+            android:text="@string/icon_chevron_up"
             />
         
         <ListView 
@@ -28,6 +35,13 @@
 	        android:layout_marginLeft="5dp"
 	        android:layout_marginRight="5dp"
 	        android:background="#123456"
+            />
+        <Button 
+            android:id="@+id/up_arrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:attr/buttonStyleSmall"
+            android:text="@string/icon_chevron_up"
             />
         
     </LinearLayout>
