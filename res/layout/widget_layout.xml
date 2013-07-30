@@ -2,7 +2,10 @@
 <FrameLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/gap_line_color"
-    android:paddingTop="2dp"
+    android:layout_marginTop="@dimen/widget_margin_top"
+    android:layout_marginBottom="@dimen/widget_margin_bottom"
+    android:layout_marginLeft="@dimen/widget_margin_left"
+    android:layout_marginRight="@dimen/widget_margin_right"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >

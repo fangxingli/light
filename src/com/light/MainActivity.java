@@ -3,6 +3,8 @@ package com.light;
 import java.text.SimpleDateFormat;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -72,7 +74,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
+		Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
 		
 		setContentView(R.layout.activity_main);
 		
@@ -87,7 +89,6 @@ public class MainActivity extends Activity {
                 mWeibo.anthorize(MainActivity.this, new AuthDialogListener());
             }
         });
-		
 		
 	}
 
