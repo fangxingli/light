@@ -7,53 +7,32 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-
-    <FrameLayout
+    
+    <LinearLayout 
 	    android:background="@color/gap_line_color"
 	    android:paddingTop="2dp"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    >
-	    
-	    <LinearLayout 
-	        android:background="@color/main_background"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        >
-	        
-	        <TextView 
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:textColor="@color/text_color"
-	            android:text="Lighter"
-	            android:textSize="15sp"
-	            />
-	        <Button 
-	            android:id="@+id/up_arrow"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            style="?android:attr/buttonStyleSmall"
-	            android:text="@string/icon_chevron_up"
-	            />
-		        
-	        <ListView 
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginLeft="5dp"
-		        android:layout_marginRight="5dp"
-		        android:background="#123456"
-	            />
-	       
-	        <Button 
-	            android:id="@+id/down_arrow"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            style="?android:attr/buttonStyleSmall"
-	            android:text="@string/icon_chevron_down"
-	            />
-	    </LinearLayout>
-    
-</FrameLayout>
+	    android:orientation="vertical"
+        >
+        
+        <Button 
+            android:id="@+id/sina_weibo"
+            android:background="@color/main_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+           	android:text="新浪微博" 
+            />
+        
+        <WebView 
+		  	android:id="@+id/WebView01" 
+		  	android:layout_width="fill_parent" 
+		  	android:layout_height="fill_parent" 	
+			android:layout_weight="1"
+		  	/>
+        
+    </LinearLayout>
 
 </RelativeLayout>

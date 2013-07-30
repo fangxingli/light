@@ -37,11 +37,11 @@
 	        android:background="#123456"
             />
         <Button 
-            android:id="@+id/up_arrow"
+            android:id="@+id/down_arrow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="?android:attr/buttonStyleSmall"
-            android:text="@string/icon_chevron_up"
+            android:text="@string/icon_chevron_down"
             />
         
     </LinearLayout>
