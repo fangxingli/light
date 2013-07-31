@@ -24,7 +24,7 @@
             android:text="Lighter"
             android:textSize="15sp"
             />
-        <Button 
+        <ImageView
             android:id="@+id/up_arrow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
 	        android:layout_marginRight="5dp"
 	        android:background="#123456"
             />
-        <Button 
+        <ImageView 
             android:id="@+id/down_arrow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

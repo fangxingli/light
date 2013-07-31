@@ -4,6 +4,11 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,20 +36,28 @@ public class WeiboWidgetProvider extends AppWidgetProvider {
 	@Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		Log.i("GoGo", "onUpdate");
-		Typeface font = Typeface.createFromAsset( context.getAssets(), "fontawesome-webfont.ttf" );
 		for (int i = 0; i < appWidgetIds.length; ++i) {			
-			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			FrameLayout fl = (FrameLayout) inflater.inflate(R.layout.widget_layout, null);
-				
-			Button up_b = (Button)fl.findViewById(R.id.up_arrow);
-			up_b.setTypeface(font);
-				
-			Button down_b = (Button)fl.findViewById(R.id.down_arrow);
-			down_b.setTypeface(font);
-			
 			final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+			rv.setImageViewBitmap(R.id.up_arrow, buildUpdate(context, "\uf077"));
+			rv.setImageViewBitmap(R.id.down_arrow, buildUpdate(context, "\uf078"));
 			appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
 		}
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
+	}
+	
+	private Bitmap buildUpdate(Context context, String text) 
+	{
+	    Bitmap myBitmap = Bitmap.createBitmap(160, 84, Bitmap.Config.ARGB_4444);
+	    Canvas myCanvas = new Canvas(myBitmap);
+	    Paint paint = new Paint();
+	    Typeface clock = Typeface.createFromAsset(context.getAssets(),"fontawesome-webfont.ttf");
+	    paint.setAntiAlias(true);
+	    paint.setSubpixelText(true);
+	    paint.setTypeface(clock);
+	    paint.setStyle(Paint.Style.FILL);
+	    paint.setTextSize(30);
+	    paint.setTextAlign(Align.CENTER);
+	    myCanvas.drawText(text, 80, 60, paint);
+	    return myBitmap;
 	}
 }
