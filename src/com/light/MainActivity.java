@@ -1,9 +1,6 @@
 package com.light;
 
-import java.text.SimpleDateFormat;
-
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -40,10 +37,6 @@ public class MainActivity extends Activity {
             String expires_in = values.getString("expires_in");
             MainActivity.accessToken = new Oauth2AccessToken(token, expires_in);
             if (MainActivity.accessToken.isSessionValid()) {
-                String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-                        .format(new java.util.Date(MainActivity.accessToken
-                                .getExpiresTime()));
-             
                 AccessTokenKeeper.keepAccessToken(MainActivity.this, accessToken); // 保存access_token
                 Toast.makeText(MainActivity.this, "认证成功", Toast.LENGTH_SHORT)
                         .show();

@@ -31,14 +31,32 @@
             style="?android:attr/buttonStyleSmall"
             android:text="@string/icon_chevron_up"
             />
-        
-        <ListView 
+       	<FrameLayout
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="5dp"
-	        android:layout_marginRight="5dp"
-	        android:background="#123456"
-            />
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:layout_gravity="center"
+	        android:background="#F8F8F8">
+	        
+	        <ListView
+	            android:id="@+id/list"
+		        android:layout_marginLeft="5dp"
+		        android:layout_marginRight="5dp"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent" />
+	        <TextView
+	            android:id="@+id/empty_view"
+		        android:layout_marginLeft="5dp"
+		        android:layout_marginRight="5dp"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:gravity="center"
+	            android:visibility="gone"
+	            android:textColor="#ffffff"
+	            android:text="没有内容"
+	            android:textSize="20sp" />
+   		 </FrameLayout>
+     
         <ImageView 
             android:id="@+id/down_arrow"
             android:layout_width="match_parent"
