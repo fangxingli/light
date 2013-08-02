@@ -1,19 +1,16 @@
 package com.light;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
 public class WeiboWidgetProvider extends AppWidgetProvider {
@@ -39,6 +36,10 @@ public class WeiboWidgetProvider extends AppWidgetProvider {
 		for (int i = 0; i < appWidgetIds.length; ++i) {			
 			final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 			rv.setImageViewBitmap(R.id.up_arrow, buildUpdate(context, "\uf077"));
+			
+			Intent intent = new Intent(context, DialogActivity.class);
+	        PendingIntent pending_intent = PendingIntent.getActivity(context, 0, intent, 0);
+			rv.setOnClickPendingIntent(R.id.up_arrow, pending_intent);
 			rv.setImageViewBitmap(R.id.down_arrow, buildUpdate(context, "\uf078"));
 			appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
 		}

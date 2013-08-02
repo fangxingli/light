@@ -33,6 +33,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.light.DialogActivity"
+            android:label="nonono"
+            android:theme="@android:style/Theme.Dialog"
+            >
+           	 
+        </activity>
     </application>
 
 </manifest>
