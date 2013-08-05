@@ -63,21 +63,54 @@
        
    </RelativeLayout>
     
-   <RelativeLayout
-       android:id="@+id/content_layout"
+   <ViewFlipper 
+       android:id="@+id/content_flipper"
        android:layout_width="match_parent"
        android:layout_height="50dp"
        android:background="#888888"
        >
-       <TextView 
-           android:layout_height="30dp"
-           android:layout_width="match_parent"
-           android:layout_alignParentLeft="true"
-           android:layout_centerVertical="true"
-           android:textSize="10sp"
-           android:text="Amazon.com   最低价！【森海塞尔(Sennheiser)X320  Xbox专用游戏耳麦】 黑色 $34.99 包邮http://t.cn/zQaw6lh"
-           />
        
-       </RelativeLayout>
+		<RelativeLayout
+      		android:id="@+id/content_text_layout"
+	       	android:layout_width="match_parent"
+	       	android:layout_height="50dp"
+	       	android:background="#777777"
+	       	>
+	       	<TextView 
+	           	android:layout_height="30dp"
+		        android:layout_width="match_parent"
+		        android:layout_alignParentLeft="true"
+		        android:layout_centerVertical="true"
+		        android:textSize="10sp"
+		        android:text="Amazon.com   最低价！【森海塞尔(Sennheiser)X320  Xbox专用游戏耳麦】 黑色 $34.99 包邮http://t.cn/zQaw6lh"
+		        />
+		</RelativeLayout>
+		<LinearLayout
+      		android:id="@+id/content_image_layout"
+	       	android:layout_width="match_parent"
+	       	android:layout_height="50dp"
+	       	android:orientation="horizontal"
+	       	android:background="#666666"
+	       	>
+	       	<ImageView
+	       	    android:layout_height="28dp"
+	       	    android:layout_width="28dp"
+	       	    android:scaleType="centerCrop"
+	       	    android:id="@+id/image1"
+	       	    />
+	       	<ImageView
+	       	    android:layout_height="28dp"
+	       	    android:layout_width="28dp"
+	       	    android:scaleType="centerCrop"
+	       	    android:id="@+id/image2"
+	       	    />
+	       	<ImageView
+	       	    android:layout_height="28dp"
+	       	    android:layout_width="28dp"
+	       	    android:scaleType="centerCrop"
+	       	    android:id="@+id/image3"
+	       	    />
+		</LinearLayout>
+   </ViewFlipper>
     
 </LinearLayout>

@@ -1,6 +1,9 @@
 package com.light;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,6 +34,12 @@ public class MainActivity extends Activity {
         	String code = values.getString("code");
         	if(code != null){
 	        	Toast.makeText(MainActivity.this, "认证code成功" + code, Toast.LENGTH_SHORT).show();
+	        	SharedPreferences pref = MainActivity.this.getSharedPreferences("com_weibo_sdk_android", Context.MODE_APPEND);
+	    		Editor editor = pref.edit();
+	    		editor.putString("code", code);
+	    		editor.putString("token", "2.00DdgqfCE7mDOCe27fc14ab7jgKXQD");
+	    		editor.putLong("expiresTime", 125763);
+	    		editor.commit();
 	        	return;
         	}
             String token = values.getString("access_token");
@@ -82,6 +91,13 @@ public class MainActivity extends Activity {
                 mWeibo.anthorize(MainActivity.this, new AuthDialogListener());
             }
         });
+		
+		MainActivity.accessToken = AccessTokenKeeper.readAccessToken(this);
+		if (MainActivity.accessToken.isSessionValid()) {
+            AccessTokenKeeper.keepAccessToken(MainActivity.this, accessToken); // 保存access_token
+            Toast.makeText(MainActivity.this, "认证成功", Toast.LENGTH_SHORT)
+                    .show();
+        }
 		
 	}
 
