@@ -23,7 +23,10 @@ public class DataProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		// TODO Auto-generated method stub
+		if( MainActivity.accessToken.isSessionValid() ){
+			StatusesAPI status_api = new StatusesAPI(MainActivity.accessToken);
+			status_api.friendsTimeline(0, 0, 20, 1, 0, 0, 0, listener)
+		}
 		return false;
 	}
 
