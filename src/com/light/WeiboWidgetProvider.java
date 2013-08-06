@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -84,20 +85,28 @@ public class WeiboWidgetProvider extends AppWidgetProvider {
 		Log.i("GoGo", "onUpdate");
 		for (int i = 0; i < appWidgetIds.length; ++i) {			
 			final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-			rv.setImageViewBitmap(R.id.up_arrow, buildUpdate(context, "\uf077"));
 			
-			Intent intent = new Intent(context, DialogActivity.class);
-	        PendingIntent pending_intent = PendingIntent.getActivity(context, 0, intent, 0);
-			rv.setOnClickPendingIntent(R.id.up_arrow, pending_intent);
+			Intent intent = new Intent(context, WidgetService.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            
+            rv.setRemoteAdapter(R.id.list, intent);
+
+            // Set the empty view to be displayed if the collection is empty.  It must be a sibling
+            // view of the collection view.
+            rv.setEmptyView(R.id.list, R.id.empty_view);
 			
+//			intent = new Intent(context, DialogActivity.class);
+//	        PendingIntent pending_intent = PendingIntent.getActivity(context, 0, intent, 0);
+//			rv.setOnClickPendingIntent(R.id.up_arrow, pending_intent);
 			
 			final Intent refreshIntent = new Intent(context, WeiboWidgetProvider.class);
             refreshIntent.setAction(WeiboWidgetProvider.REFRESH_ACTION);
             final PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0,
                     refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setOnClickPendingIntent(R.id.down_arrow, refreshPendingIntent);
+            rv.setOnClickPendingIntent(R.id.up_arrow, refreshPendingIntent);
             
-			rv.setImageViewBitmap(R.id.down_arrow, buildUpdate(context, "\uf078"));
+			rv.setImageViewBitmap(R.id.up_arrow, buildUpdate(context, "\uf077"));
 			appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
 		}
 		super.onUpdate(context, appWidgetManager, appWidgetIds);

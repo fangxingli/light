@@ -31,7 +31,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	
 	@Override
 	public void onCreate() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -44,7 +43,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onDestroy() {
 		mStatus = null;
-		
 	}
 
 	@Override
