@@ -1,33 +1,30 @@
 package com.light;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
-class WeiboData{
-	private String mDate = null;
-	private String mText = null;
-	private String mSource = null;
-	private String mHeadImage = null;
-	private String mOriginName = null;
-	private String mRepostCount = null;
-	private String mCommentCount = null;
-	private String mattitudeCount = null;
-	private String mContentPictures= null;
-}
+import com.light.WeiboAPI.FEATURE;
+import com.light.sina.bean.JSON2Java;
+import com.light.sina.bean.Status;
+import com.weibo.sdk.android.Oauth2AccessToken;
+import com.weibo.sdk.android.WeiboException;
+import com.weibo.sdk.android.net.RequestListener;
 
 public class DataProvider extends ContentProvider {
 	public static final Uri CONTENT_URI =
 	        Uri.parse("content://com.light.android.weibo.provider");
 
+	public static Status[] sStatues = null;
 	@Override
 	public boolean onCreate() {
-		if( MainActivity.accessToken.isSessionValid() ){
-			StatusesAPI status_api = new StatusesAPI(MainActivity.accessToken);
-			status_api.friendsTimeline(0, 0, 20, 1, 0, 0, 0, listener)
-		}
-		return false;
+		
+		return true;
 	}
 
 	@Override
@@ -58,7 +55,41 @@ public class DataProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO Auto-generated method stub
+		Log.i("GoGo", "接收到更新命令");
+		final Uri uri_ = uri;
+		if( uri.getPath().contentEquals(CONTENT_URI.getPath()) )
+			MainActivity.accessToken = new Oauth2AccessToken("2.00DdgqfCE7mDOCe27fc14ab7jgKXQD", "125763");
+			Log.i("GoGo", "uri 相同" + MainActivity.accessToken.getRefreshToken() + String.valueOf(MainActivity.accessToken.getExpiresTime()));
+			if( MainActivity.accessToken.isSessionValid() ){
+				Log.i("GoGo", "accessToken 成功");
+				StatusesAPI status_api = new StatusesAPI(MainActivity.accessToken);
+				Log.i("GoGo", "开始更新");
+				status_api.friendsTimeline(0, 0, 20, 1, false, FEATURE.ALL, false, 
+						new RequestListener(){
+							public void onComplete(String arg0) {
+								try{
+									Log.i("GoGo", "更新完毕了");
+									sStatues = new JSON2Java(arg0).getStatus();
+									Log.i("GoGo", "通知Observer更新");
+									DataProvider.this.getContext().getContentResolver().notifyChange(uri_, null);
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+							public void onComplete4binary(ByteArrayOutputStream arg0) {
+							}
+	
+							public void onError(WeiboException arg0) {
+								Log.i("GoGo", "Token 获得失败");
+							}
+	
+							public void onIOException(IOException arg0) {
+							}
+				});
+				return 20;
+			}else{
+				Log.i("GoGo", "accessToken 失败");
+			}
 		return 0;
 	}
 	
