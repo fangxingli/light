@@ -76,8 +76,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
-		
 		setContentView(R.layout.activity_main);
 		
 		mWeibo = Weibo.getInstance(ConstantS.APP_KEY, ConstantS.REDIRECT_URL, ConstantS.SCOPE);

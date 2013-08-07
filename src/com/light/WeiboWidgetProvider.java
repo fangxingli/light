@@ -42,6 +42,7 @@ class DataProviderObserver extends ContentObserver {
 
 public class WeiboWidgetProvider extends AppWidgetProvider {
 	private DataProviderObserver sDataObserver = null;
+	
 	private static Handler sWorkerQueue;
 	private static HandlerThread sWorkerThread;
     private static final String REFRESH_ACTION = "fresh";
@@ -55,6 +56,8 @@ public class WeiboWidgetProvider extends AppWidgetProvider {
 	public void onEnabled(Context context) {
 		Log.i("GoGo", "onEnabled");
 		super.onEnabled(context);
+		
+		
 		final ContentResolver r = context.getContentResolver();
         if (sDataObserver == null) {
             final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
