@@ -1,5 +1,6 @@
 package com.light;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 import android.appwidget.AppWidgetManager;
@@ -15,9 +16,6 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.light.sina.bean.Status;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 public class WidgetService extends RemoteViewsService {
     @Override
@@ -31,7 +29,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Cursor mCursor;
     private int mAppWidgetId;
     private Status[] mStatus = null;
-    private ImageLoader mImageLoader = null;
     
     private ArrayList<RemoteViews> mRemoteViewList = null;
     
@@ -54,8 +51,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	
 	@Override
 	public void onCreate() {
-		mImageLoader = ImageLoader.getInstance();
-		mImageLoader.init(ImageLoaderConfiguration.createDefault(mContext));
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("user_pic_update");
 		mContext.registerReceiver(mReceiver, filter);
@@ -97,17 +92,9 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         
         rv.setImageViewResource(R.id.logo, R.drawable.sina);
         
-        final int _position = position;
-        mImageLoader.loadImage(item.getUser().getProfileImageUrl(), new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            	Intent intent = new Intent("user_pic_update");
-            	intent.putExtra("id", _position);
-            	intent.putExtra("bitmap", loadedImage);
-            	mContext.sendBroadcast(intent);
-            }
-        });
-
+        if( StatusProcesser.INSTANCE.isBitmapReady(item.getCreatedAt()) )
+        	rv.setImageViewBitmap(R.id.user_pic, StatusProcesser.INSTANCE.getLruCacheImage(item.getCreatedAt()) );
+        
         mRemoteViewList.add(rv);
         // Set the click intent so that we can handle it and show a toast message
 //        final Intent fillInIntent = new Intent();

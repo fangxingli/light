@@ -58,7 +58,7 @@ public class DataProvider extends ContentProvider {
 		Log.i("GoGo", "接收到更新命令");
 		final Uri uri_ = uri;
 		if( uri.getPath().contentEquals(CONTENT_URI.getPath()) )
-			MainActivity.accessToken = new Oauth2AccessToken("2.00DdgqfCE7mDOCe27fc14ab7jgKXQD", "125763");
+			MainActivity.accessToken = new Oauth2AccessToken("2.00MI1B_CE7mDOC281db9aa0bgbqUPD", "157679999");
 			Log.i("GoGo", "uri 相同" + MainActivity.accessToken.getRefreshToken() + String.valueOf(MainActivity.accessToken.getExpiresTime()));
 			if( MainActivity.accessToken.isSessionValid() ){
 				Log.i("GoGo", "accessToken 成功");
@@ -70,6 +70,7 @@ public class DataProvider extends ContentProvider {
 								try{
 									Log.i("GoGo", "更新完毕了");
 									sStatues = new JSON2Java(arg0).getStatus();
+									StatusProcesser.INSTANCE.updateCurrentStatusList(sStatues);
 									Log.i("GoGo", "通知Observer更新");
 									DataProvider.this.getContext().getContentResolver().notifyChange(uri_, null);
 								}catch(Exception e){
