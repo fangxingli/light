@@ -61,6 +61,10 @@ public enum StatusProcesser{
 		return count;
 	}
 	
+	public List<Status> getStatusList(){
+		return mStatusList;
+	}
+	
 	private void downloadImages(){
 		new Thread(){
 			public void run(){
@@ -85,7 +89,6 @@ public enum StatusProcesser{
 		            }catch (IOException e) {
 			            e.printStackTrace();
 			        }catch (NoSuchAlgorithmException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} 
 				}

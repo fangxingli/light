@@ -1,7 +1,7 @@
 package com.light;
 
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -28,7 +27,7 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private Context mContext;
     private Cursor mCursor;
     private int mAppWidgetId;
-    private Status[] mStatus = null;
+    private List<Status> mStatus = null;
     
     private ArrayList<RemoteViews> mRemoteViewList = null;
     
@@ -62,7 +61,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onDataSetChanged() {
 		Log.i("GoGo", "Service 收到更新命令");
-		mStatus = DataProvider.sStatues;
+//		mStatus = DataProvider.sStatues;
+		mStatus = StatusProcesser.INSTANCE.getStatusList();
 	}
 
 	@Override
@@ -73,7 +73,7 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public int getCount() {
 		if( mStatus != null)
-			return mStatus.length;
+			return mStatus.size();
 		return 0;
 	}
 
@@ -81,7 +81,7 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 		// Get the data for this position from the content provider
 		Log.i("GoGo", "更新第" + String.valueOf(position) + "个");
-		Status item = mStatus[position];
+		Status item = mStatus.get(position);
 		
         final int item_layout_id = R.layout.widget_item;
         final RemoteViews rv = new RemoteViews(mContext.getPackageName(), item_layout_id);
@@ -114,14 +114,12 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
+		return position;
 	}
 
 	@Override
