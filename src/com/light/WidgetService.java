@@ -36,7 +36,10 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     		if( intent.getAction().contentEquals("user_pic_update") ){
     			int id = intent.getIntExtra("id", -1);
     			if( id != -1 ){
-    				mRemoteViewList.get(id).setImageViewBitmap(R.id.user_pic, (Bitmap)intent.getParcelableExtra("bitmap"));
+    				Log.i("GoGo", "更新图片: " + String.valueOf(id));
+    				mRemoteViewList.get(id).setImageViewBitmap(
+    						R.id.user_pic, 
+    						StatusProcesser.INSTANCE.getLruCacheImage(mStatus.get(id).getUser().getProfileImageUrl()));
     			}
     		}
     	}
@@ -63,6 +66,7 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		Log.i("GoGo", "Service 收到更新命令");
 //		mStatus = DataProvider.sStatues;
 		mStatus = StatusProcesser.INSTANCE.getStatusList();
+		mRemoteViewList.clear();
 	}
 
 	@Override
@@ -93,7 +97,9 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         rv.setImageViewResource(R.id.logo, R.drawable.sina);
         
         if( StatusProcesser.INSTANCE.isBitmapReady(item.getCreatedAt()) )
-        	rv.setImageViewBitmap(R.id.user_pic, StatusProcesser.INSTANCE.getLruCacheImage(item.getCreatedAt()) );
+        	rv.setImageViewBitmap(R.id.user_pic, StatusProcesser.INSTANCE.getLruCacheImage(item.getUser().getProfileImageUrl()) );
+        else
+        	StatusProcesser.INSTANCE.downloadOnePicture(item.getUser().getProfileImageUrl(), position);
         
         mRemoteViewList.add(rv);
         // Set the click intent so that we can handle it and show a toast message

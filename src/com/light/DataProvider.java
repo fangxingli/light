@@ -70,7 +70,7 @@ public class DataProvider extends ContentProvider {
 								try{
 									Log.i("GoGo", "更新完毕了");
 									sStatues = new JSON2Java(arg0).getStatus();
-									StatusProcesser.INSTANCE.updateCurrentStatusList(sStatues);
+									StatusProcesser.INSTANCE.updateCurrentStatusList(sStatues, DataProvider.this.getContext());
 									Log.i("GoGo", "通知Observer更新");
 									DataProvider.this.getContext().getContentResolver().notifyChange(uri_, null);
 								}catch(Exception e){
