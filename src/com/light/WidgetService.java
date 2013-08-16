@@ -63,10 +63,14 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onDataSetChanged() {
-		Log.i("GoGo", "Service 收到更新命令");
-//		mStatus = DataProvider.sStatues;
+		Log.i("GoGo", "onDataSetChanged 收到更新命令");
+//		mStatus = StatusProcesser.INSTANCE.getStatusList();
+//		mRemoteViewList.clear();
+//		DataProvider.INSTANCE.update();
+		
 		mStatus = StatusProcesser.INSTANCE.getStatusList();
 		mRemoteViewList.clear();
+		Log.i("GoGo", "onDataSetChanged 完成");
 	}
 
 	@Override
@@ -85,21 +89,23 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 		// Get the data for this position from the content provider
 		Log.i("GoGo", "更新第" + String.valueOf(position) + "个");
-		Status item = mStatus.get(position);
+		Status item = mStatus.get(mStatus.size() - position - 1);
 		
         final int item_layout_id = R.layout.widget_item;
         final RemoteViews rv = new RemoteViews(mContext.getPackageName(), item_layout_id);
         
         rv.setTextViewText(R.id.user_name, item.getUser().getName());
-        rv.setTextViewText(R.id.user_time, item.getUser().getCreatedAt());
+        rv.setTextViewText(R.id.user_time, item.getCreatedAt());
         rv.setTextViewText(R.id.content_text, item.getText());
         
         rv.setImageViewResource(R.id.logo, R.drawable.sina);
         
-        if( StatusProcesser.INSTANCE.isBitmapReady(item.getCreatedAt()) )
+        if( StatusProcesser.INSTANCE.isBitmapReady(item.getUser().getProfileImageUrl()) ){
+        	Log.i("GoGo", "可以");
         	rv.setImageViewBitmap(R.id.user_pic, StatusProcesser.INSTANCE.getLruCacheImage(item.getUser().getProfileImageUrl()) );
-        else
-        	StatusProcesser.INSTANCE.downloadOnePicture(item.getUser().getProfileImageUrl(), position);
+        }
+//        else
+//        	StatusProcesser.INSTANCE.downloadOnePicture(item.getUser().getProfileImageUrl(), position);
         
         mRemoteViewList.add(rv);
         // Set the click intent so that we can handle it and show a toast message

@@ -13,56 +13,61 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.LruCache;
+import android.widget.RemoteViews;
 
 import com.light.sina.bean.Status;
 
 public enum StatusProcesser{
 	INSTANCE;
 	
-	private Context mContext = null;
 	private static final int CACHE_SIZE = 4*1024*1024;
 	private static final int LIST_MAX = 80;
 	private List<Status> mStatusList = new ArrayList<Status>(LIST_MAX);
 	private int mLastCursor = -1;
 	private List<String> mImageUris = new ArrayList<String>();
-	private LruCache<byte[], Bitmap> mBitmapCache = new LruCache<byte[], Bitmap>(CACHE_SIZE){
+	private LruCache<String, Bitmap> mBitmapCache = new LruCache<String, Bitmap>(CACHE_SIZE){
 		protected int sizeOf(byte[] key, Bitmap value) {
 	           return value.getByteCount();
 		}
 	};
 	
-	public int updateCurrentStatusList(Status[] array, Context context){
-		mContext = context;
+	public int updateCurrentStatusList(Status[] array, AppWidgetManager widget_manager, int[] appWidgetIds, RemoteViews rv){
 		int count = 0;
 		if( mStatusList.isEmpty() ){
 			for(int i=array.length-1; i>=0; i--){
 					mStatusList.add(array[i]);
 					mLastCursor++;
+					mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
+					count++;
 			}
-		}
-		
-		for(int i=array.length-1; i>=0; i--){
-			Date current_max_date = getWeiboDate(mStatusList.get(mLastCursor).getCreatedAt());
-			// 新微博时间在已存在微波时间之后
-			if( getWeiboDate(array[i].getCreatedAt()).after(current_max_date) ){
-				if( mStatusList.size() < LIST_MAX ){
-					mStatusList.add(array[i]);
-					mLastCursor++;
-				}else{
-					mLastCursor = (mLastCursor+1)%LIST_MAX;
-					mStatusList.set(mLastCursor, array[i]);
+		}else{
+			for(int i=array.length-1; i>=0; i--){
+				Date current_max_date = getWeiboDate(mStatusList.get(mLastCursor).getCreatedAt());
+				// 新微博时间在已存在微波时间之后
+				if( getWeiboDate(array[i].getCreatedAt()).after(current_max_date) ){
+					if( mStatusList.size() < LIST_MAX ){
+						mStatusList.add(array[i]);
+						mLastCursor++;
+					}else{
+						mLastCursor = (mLastCursor+1)%LIST_MAX;
+						mStatusList.set(mLastCursor, array[i]);
+					}
+					mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
+					count++;
 				}
-				mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
-				count++;
 			}
 		}
 		downloadImages();
+		for(int i=0; i<appWidgetIds.length; i++){
+			widget_manager.updateAppWidget(appWidgetIds[i], rv);
+		}
 		return count;
 	}
 	
@@ -71,11 +76,13 @@ public enum StatusProcesser{
 	}
 	
 	private void downloadImages(){
-		new Thread(){
-			public void run(){
+//		new Thread(){
+//			public void run(){
 				Log.i("GoGo", "开始图片下载 mImageUris:" + mImageUris.size());
 				for(int i=0; i<mImageUris.size(); i++ ){
 					String item = mImageUris.get(i);
+					if( isBitmapReady(item) )
+						continue;
 					Bitmap bitmap=null;
 			        try {
 			            Log.i("GoGo", "图片" + item + "开始下载");
@@ -89,23 +96,23 @@ public enum StatusProcesser{
 			            bitmap=BitmapFactory.decodeStream(inputStream); 
 			            inputStream.close();
 			            
+			            Log.i("GoGoL", "jinjin");
 			            synchronized(mBitmapCache){
-			            	mBitmapCache.put(MessageDigest.getInstance("MD5").digest(item.getBytes("UTF-8")), bitmap);
+//			            	Log.i("GoGoL", "存 " + MessageDigest.getInstance("MD5").digest(item.getBytes("UTF-8")));
+			            	Log.i("GoGoL", "存 " + item);
+//			            	mBitmapCache.put(MessageDigest.getInstance("MD5").digest(item.getBytes("UTF-8")), bitmap);
+			            	mBitmapCache.put(item, bitmap);
 			            }
+			            Log.i("GoGoL", "chuchu");
 			            Log.i("GoGo", "图片" + item + "下载完成");
-			            Intent intent = new Intent("user_pic_update");
-			            intent.putExtra("id", i);
-			            mContext.sendBroadcast(intent);
 			        }catch (MalformedURLException e) {
 			            e.printStackTrace();
 		            }catch (IOException e) {
 			            e.printStackTrace();
-			        }catch (NoSuchAlgorithmException e) {
-						e.printStackTrace();
-					} 
+			        }
 				}
-			}
-		}.start();
+//			}
+//		}.start();
 	}
 	
 	public void downloadOnePicture(final String uri, final int id){
@@ -122,44 +129,30 @@ public enum StatusProcesser{
             inputStream.close();
             
             synchronized(mBitmapCache){
-            	mBitmapCache.put(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8")), bitmap);
+            	mBitmapCache.put(uri, bitmap);
             }
-            Intent intent = new Intent("user_pic_update");
-            intent.putExtra("id", id);
-            mContext.sendBroadcast(intent);
+//            Intent intent = new Intent("user_pic_update");
+//            intent.putExtra("id", id);
+//            mContext.sendBroadcast(intent);
         }catch (MalformedURLException e) {
             e.printStackTrace();
         }catch (IOException e) {
             e.printStackTrace();
-        }catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} 
+        }
 	}
 	
 	public boolean isBitmapReady(String uri){
 		synchronized(mBitmapCache){
-			try {
-				return mBitmapCache.get(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8"))) == null ? false : true;
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+//				Log.i("GoGoL", "拿" + mBitmapCache.get(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8"))));
+				Log.i("GoGoL", "拿" + uri);
+				return mBitmapCache.get(uri) == null ? false : true;
 		}
-		return false;
 	}
 	
 	public Bitmap getLruCacheImage(String uri){
 		synchronized(mBitmapCache){
-			try {
-				return mBitmapCache.get(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8")));
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+				return mBitmapCache.get(uri);
 		}
-		return null;
 	}
 	
 	private Date getWeiboDate(String s){

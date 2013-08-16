@@ -43,6 +43,10 @@ class DataProviderObserver extends ContentObserver {
 public class WeiboWidgetProvider extends AppWidgetProvider {
 	private DataProviderObserver sDataObserver = null;
 	
+	private AppWidgetManager mAppWidgetManager = null;
+	private int[] mAppWidgetIds = null;
+	private RemoteViews mRemoteViews = null;
+			
 	private static Handler sWorkerQueue;
 	private static HandlerThread sWorkerThread;
     private static final String REFRESH_ACTION = "fresh";
@@ -57,25 +61,29 @@ public class WeiboWidgetProvider extends AppWidgetProvider {
 		Log.i("GoGo", "onEnabled");
 		super.onEnabled(context);
 		
-		
 		final ContentResolver r = context.getContentResolver();
         if (sDataObserver == null) {
             final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
             final ComponentName cn = new ComponentName(context, WeiboWidgetProvider.class);
             sDataObserver = new DataProviderObserver(mgr, cn, sWorkerQueue);
-            r.registerContentObserver(DataProvider.CONTENT_URI, true, sDataObserver);
+//            r.registerContentObserver(DataProvider.CONTENT_URI, true, sDataObserver);
         }
 	}
 	
 	@Override
     public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
+		final Context context = ctx;
         if (action.equals(REFRESH_ACTION)) {
         	final ContentResolver r = ctx.getContentResolver();
             sWorkerQueue.removeMessages(0);
             sWorkerQueue.post(new Runnable(){
             	public void run(){
-            		r.update(DataProvider.CONTENT_URI, null, null, null);
+//            		r.update(DataProvider.CONTENT_URI, null, null, null);
+            		final AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+                    final ComponentName cn = new ComponentName(context, WeiboWidgetProvider.class);
+//            		DataProvider.INSTANCE.update(mgr, mgr.getAppWidgetIds(cn), mRemoteViews);
+            		onUpdate(context, mgr, mgr.getAppWidgetIds(cn));
             		Log.i("GoGo", "发送更新命令");
             	}
             });
@@ -110,7 +118,12 @@ public class WeiboWidgetProvider extends AppWidgetProvider {
             rv.setOnClickPendingIntent(R.id.up_arrow, refreshPendingIntent);
             
 			rv.setImageViewBitmap(R.id.up_arrow, buildUpdate(context, "\uf077"));
-			appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+			// 下面开始更新
+			mAppWidgetManager = appWidgetManager;
+			mAppWidgetIds = appWidgetIds;
+			mRemoteViews = rv;
+			DataProvider.INSTANCE.update(appWidgetManager, appWidgetIds, rv);
+//			appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
 		}
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
