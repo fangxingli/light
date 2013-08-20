@@ -3,13 +3,15 @@ package com.light;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -99,13 +101,23 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         rv.setTextViewText(R.id.content_text, item.getText());
         
         rv.setImageViewResource(R.id.logo, R.drawable.sina);
-        
+        // 更新头像
         if( StatusProcesser.INSTANCE.isBitmapReady(item.getUser().getProfileImageUrl()) ){
         	Log.i("GoGo", "可以");
         	rv.setImageViewBitmap(R.id.user_pic, StatusProcesser.INSTANCE.getLruCacheImage(item.getUser().getProfileImageUrl()) );
         }
-//        else
-//        	StatusProcesser.INSTANCE.downloadOnePicture(item.getUser().getProfileImageUrl(), position);
+        // 更新微博图片
+        if( item.getPicUrls().length() > 0 ){
+        	JSONArray arr = item.getPicUrls();
+        	for(int j=0; j<arr.length(); j++ ){
+				try {
+					if( StatusProcesser.INSTANCE.isBitmapReady(arr.getJSONObject(j).getString("thumbnail_pic")) )
+						rv.setImageViewBitmap(R.id.image10, StatusProcesser.INSTANCE.getLruCacheImage(arr.getJSONObject(j).getString("thumbnail_pic")) );
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+        }
         
         mRemoteViewList.add(rv);
         // Set the click intent so that we can handle it and show a toast message

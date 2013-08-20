@@ -85,6 +85,13 @@
 		        android:textSize="10sp"
 		        android:text="Amazon.com   最低价！【森海塞尔(Sennheiser)X320  Xbox专用游戏耳麦】 黑色 $34.99 包邮http://t.cn/zQaw6lh"
 		        />
+	       	
+	       	<ImageView
+	       	    android:id="@+id/image10"
+	       	    android:layout_height="wrap_content"
+	       	    android:layout_width="wrap_content"
+	       	    android:layout_below="@id/content_text"
+	       	    />
 		</RelativeLayout>
 		<LinearLayout
       		android:id="@+id/content_image_layout"

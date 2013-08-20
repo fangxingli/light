@@ -2,20 +2,18 @@ package com.light;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -40,15 +38,11 @@ public enum StatusProcesser{
 	
 	public int updateCurrentStatusList(Status[] array, AppWidgetManager widget_manager, int[] appWidgetIds, RemoteViews rv){
 		int count = 0;
-		if( mStatusList.isEmpty() ){
-			for(int i=array.length-1; i>=0; i--){
-					mStatusList.add(array[i]);
-					mLastCursor++;
-					mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
-					count++;
-			}
-		}else{
-			for(int i=array.length-1; i>=0; i--){
+		for(int i=array.length-1; i>=0; i--){
+			if( mStatusList.isEmpty() ){
+				mStatusList.add(array[i]);
+				mLastCursor++;
+			}else{
 				Date current_max_date = getWeiboDate(mStatusList.get(mLastCursor).getCreatedAt());
 				// 新微博时间在已存在微波时间之后
 				if( getWeiboDate(array[i].getCreatedAt()).after(current_max_date) ){
@@ -59,10 +53,18 @@ public enum StatusProcesser{
 						mLastCursor = (mLastCursor+1)%LIST_MAX;
 						mStatusList.set(mLastCursor, array[i]);
 					}
-					mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
-					count++;
 				}
 			}
+			mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
+			JSONArray arr = array[i].getPicUrls();
+			for(int j=0; j<arr.length(); j++ ){
+				try {
+					mImageUris.add(arr.getJSONObject(j).getString("thumbnail_pic"));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			count++;
 		}
 		downloadImages();
 		for(int i=0; i<appWidgetIds.length; i++){
@@ -96,14 +98,9 @@ public enum StatusProcesser{
 			            bitmap=BitmapFactory.decodeStream(inputStream); 
 			            inputStream.close();
 			            
-			            Log.i("GoGoL", "jinjin");
 			            synchronized(mBitmapCache){
-//			            	Log.i("GoGoL", "存 " + MessageDigest.getInstance("MD5").digest(item.getBytes("UTF-8")));
-			            	Log.i("GoGoL", "存 " + item);
-//			            	mBitmapCache.put(MessageDigest.getInstance("MD5").digest(item.getBytes("UTF-8")), bitmap);
 			            	mBitmapCache.put(item, bitmap);
 			            }
-			            Log.i("GoGoL", "chuchu");
 			            Log.i("GoGo", "图片" + item + "下载完成");
 			        }catch (MalformedURLException e) {
 			            e.printStackTrace();
@@ -144,7 +141,6 @@ public enum StatusProcesser{
 	public boolean isBitmapReady(String uri){
 		synchronized(mBitmapCache){
 //				Log.i("GoGoL", "拿" + mBitmapCache.get(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8"))));
-				Log.i("GoGoL", "拿" + uri);
 				return mBitmapCache.get(uri) == null ? false : true;
 		}
 	}
