@@ -3,122 +3,120 @@
     android:id="@+id/widget_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="5dp"
     android:orientation="vertical"
+    android:background="@drawable/editgroup_item_bg"
     >
     
-   <RelativeLayout 
-       android:id="@+id/user_info_layout"
-	   android:layout_width="match_parent"
-	   android:background="@color/item_background"
-	   android:layout_height="30dp"
-       >
+	<RelativeLayout 
+		android:id="@+id/user_info_layout"
+	    android:layout_width="match_parent"
+	    android:layout_height="30dp"
+        >
        
-       <ImageView
-           android:id="@+id/user_pic"
-           android:layout_alignParentLeft="true"
-           android:layout_width="30dp"
-           android:layout_height="30dp"
-           android:scaleType="fitXY"
-           android:src="@drawable/pic"
-           />
-       <TextView 
-           android:id="@+id/user_name"
-           android:layout_toRightOf="@id/user_pic"
-           android:layout_alignParentTop="true"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:textSize="10sp"
-           android:textColor="@color/title"
-           android:text="北美省钱网"
-           />
-       <TextView 
-           android:id="@+id/user_time"
-           android:layout_toRightOf="@id/user_pic"
-           android:layout_alignParentBottom="true"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:textSize="8sp"
-           android:textColor="@color/time"
-           android:text="5day ago"
-           />
-       <ImageView 
-           android:id="@+id/logo"
-           android:layout_width="24dp"
-           android:layout_height="24dp"
-           android:layout_marginRight="10dp"
-           android:layout_centerInParent="true"
-           android:layout_alignParentRight="true"
-           android:src="@drawable/sina"
-           />
-       <ImageView 
-           android:id="@+id/user_info_divide"
-           android:layout_width="wrap_content"
-           android:layout_height="24dp"
-           android:layout_marginRight="35dp"
-           android:layout_centerInParent="true"
-           android:layout_alignRight="@id/logo"
-           android:src="@drawable/topnav_divider"
-           />
+       	<ImageView
+           	android:id="@+id/user_pic"
+           	android:layout_width="30dp"
+           	android:layout_height="30dp"
+           	android:layout_margin="2dp"
+           	android:layout_alignParentLeft="true"
+           	android:scaleType="fitCenter"
+           	android:src="@drawable/pic" />
+
+       	<TextView
+           	android:id="@+id/user_name"
+           	android:layout_width="wrap_content"
+           	android:layout_height="wrap_content"
+           	android:layout_alignParentTop="true"
+           	android:layout_toRightOf="@id/user_pic"
+           	android:text="北美省钱网"
+           	android:textColor="@color/title"
+           	android:textSize="11sp" />
+
+       	<TextView
+           	android:id="@+id/user_time"
+           	android:layout_width="wrap_content"
+           	android:layout_height="wrap_content"
+           	android:layout_alignParentBottom="true"
+           	android:layout_toRightOf="@id/user_pic"
+           	android:text="5day ago"
+           	android:textColor="@color/time"
+           	android:textSize="8sp" />
+
+       	<ImageView
+        	android:id="@+id/logo"
+           	android:layout_width="24dp"
+           	android:layout_height="24dp"
+           	android:layout_alignParentRight="true"
+           	android:layout_centerInParent="true"
+           	android:layout_marginRight="10dp"
+           	android:src="@drawable/sina" />
+
+       	<ImageView
+           	android:id="@+id/user_info_divide"
+           	android:layout_width="wrap_content"
+           	android:layout_height="24dp"
+           	android:layout_alignRight="@id/logo"
+           	android:layout_centerInParent="true"
+           	android:layout_marginRight="35dp"
+           	android:src="@drawable/topnav_divider" />
        
-   </RelativeLayout>
+	</RelativeLayout>
     
-   <ViewFlipper 
-       android:id="@+id/content_flipper"
-       android:layout_width="match_parent"
-       android:layout_height="50dp"
-       android:background="#888888"
-       >
-       
-		<RelativeLayout
-      		android:id="@+id/content_text_layout"
-	       	android:layout_width="match_parent"
-	       	android:layout_height="50dp"
-	       	android:background="#777777"
-	       	>
-	       	<TextView 
-	       	    android:id="@+id/content_text"
-	           	android:layout_height="30dp"
+	<RelativeLayout
+	    android:id="@+id/content_text_layout"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    >
+
+	    <TextView
+	        android:id="@+id/content_text"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:textColor="@color/title"
+	        android:text="Amazon.com   最低价！【森海塞尔(Sennheiser)X320  Xbox专用游戏耳麦】 黑色 $34.99 包邮http://t.cn/zQaw6lh"
+	        android:textSize="14sp" 
+	        />
+
+	    <RelativeLayout 
+	    	android:id="@+id/content_retweeted_layout"
+	    	android:layout_below="@id/content_text"
+	    	android:layout_width="match_parent"	        
+	    	android:layout_height="wrap_content"
+	    	android:layout_marginLeft="3dp"
+	    	android:layout_marginRight="3dp"
+	    	android:background="@drawable/timeline_retweet_background"
+	    	>
+	    	
+	    	<TextView
+		        android:id="@+id/retweet_content_text"
 		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
 		        android:layout_alignParentLeft="true"
-		        android:layout_centerVertical="true"
-		        android:textSize="10sp"
-		        android:text="Amazon.com   最低价！【森海塞尔(Sennheiser)X320  Xbox专用游戏耳麦】 黑色 $34.99 包邮http://t.cn/zQaw6lh"
+		        android:textColor="@color/title"
+		        android:textSize="13sp" 
 		        />
-	       	
-	       	<ImageView
-	       	    android:id="@+id/image10"
-	       	    android:layout_height="wrap_content"
-	       	    android:layout_width="wrap_content"
-	       	    android:layout_below="@id/content_text"
-	       	    />
-		</RelativeLayout>
-		<LinearLayout
-      		android:id="@+id/content_image_layout"
-	       	android:layout_width="match_parent"
-	       	android:layout_height="50dp"
-	       	android:orientation="horizontal"
-	       	android:background="#666666"
-	       	>
-	       	<ImageView
-	       	    android:layout_height="28dp"
-	       	    android:layout_width="28dp"
-	       	    android:scaleType="centerCrop"
-	       	    android:id="@+id/image1"
-	       	    />
-	       	<ImageView
-	       	    android:layout_height="28dp"
-	       	    android:layout_width="28dp"
-	       	    android:scaleType="centerCrop"
-	       	    android:id="@+id/image2"
-	       	    />
-	       	<ImageView
-	       	    android:layout_height="28dp"
-	       	    android:layout_width="28dp"
-	       	    android:scaleType="centerCrop"
-	       	    android:id="@+id/image3"
-	       	    />
-		</LinearLayout>
-   </ViewFlipper>
+	    	
+	    	<ImageView
+		        android:id="@+id/retweet_image"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="2dp"
+		        android:scaleType="fitCenter"
+		        android:layout_below="@id/retweet_content_text"
+		        />
+	
+	    </RelativeLayout>
+	    <ImageView
+	        android:id="@+id/image10"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="2dp"
+	        android:scaleType="fitCenter"
+	        android:layout_below="@id/content_text"
+	        />
+	</RelativeLayout>
     
 </LinearLayout>

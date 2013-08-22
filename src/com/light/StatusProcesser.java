@@ -8,7 +8,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +31,7 @@ public enum StatusProcesser{
 	private static final int LIST_MAX = 80;
 	private List<Status> mStatusList = new ArrayList<Status>(LIST_MAX);
 	private int mLastCursor = -1;
-	private List<String> mImageUris = new ArrayList<String>();
+	private Set<String> mImageUris = new HashSet<String>();
 	private LruCache<String, Bitmap> mBitmapCache = new LruCache<String, Bitmap>(CACHE_SIZE){
 		protected int sizeOf(byte[] key, Bitmap value) {
 	           return value.getByteCount();
@@ -38,11 +40,15 @@ public enum StatusProcesser{
 	
 	public int updateCurrentStatusList(Status[] array, AppWidgetManager widget_manager, int[] appWidgetIds, RemoteViews rv){
 		int count = 0;
-		for(int i=array.length-1; i>=0; i--){
-			if( mStatusList.isEmpty() ){
+		if( mStatusList.isEmpty() ){
+			for(int i=array.length-1; i>=0; i--){
 				mStatusList.add(array[i]);
 				mLastCursor++;
-			}else{
+				putImageLru(array, i);
+				count++;
+			}
+		}else{
+			for(int i=array.length-1; i>=0; i--){
 				Date current_max_date = getWeiboDate(mStatusList.get(mLastCursor).getCreatedAt());
 				// 新微博时间在已存在微波时间之后
 				if( getWeiboDate(array[i].getCreatedAt()).after(current_max_date) ){
@@ -54,18 +60,11 @@ public enum StatusProcesser{
 						mStatusList.set(mLastCursor, array[i]);
 					}
 				}
+				putImageLru(array, i);
+				count++;
 			}
-			mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
-			JSONArray arr = array[i].getPicUrls();
-			for(int j=0; j<arr.length(); j++ ){
-				try {
-					mImageUris.add(arr.getJSONObject(j).getString("thumbnail_pic"));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			count++;
 		}
+		
 		downloadImages();
 		for(int i=0; i<appWidgetIds.length; i++){
 			widget_manager.updateAppWidget(appWidgetIds[i], rv);
@@ -77,12 +76,37 @@ public enum StatusProcesser{
 		return mStatusList;
 	}
 	
+	private void putImageLru(Status[] array, int i){
+		// 下头像
+		mImageUris.add(mStatusList.get(mLastCursor).getUser().getProfileImageUrl());
+		// 下微博图片
+		JSONArray arr = array[i].getPicUrls();
+		for(int j=0; j<arr.length(); j++ ){
+			try {
+				mImageUris.add(arr.getJSONObject(j).getString("thumbnail_pic"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		// 下转发图片
+		if( mStatusList.get(mLastCursor).getRetweetedStatus() != null ){
+			JSONArray retweet_pics = mStatusList.get(mLastCursor).getRetweetedStatus().getPicUrls();
+			for(int j=0; j<retweet_pics.length(); j++ ){
+				try {
+					mImageUris.add(retweet_pics.getJSONObject(j).getString("thumbnail_pic"));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	private void downloadImages(){
 //		new Thread(){
 //			public void run(){
 				Log.i("GoGo", "开始图片下载 mImageUris:" + mImageUris.size());
-				for(int i=0; i<mImageUris.size(); i++ ){
-					String item = mImageUris.get(i);
+				for(String item : mImageUris ){
+//					String item = mImageUris.get(i);
 					if( isBitmapReady(item) )
 						continue;
 					Bitmap bitmap=null;

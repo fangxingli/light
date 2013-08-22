@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/gap_line_color"
     android:layout_marginTop="@dimen/widget_margin_top"
     android:layout_marginBottom="@dimen/widget_margin_bottom"
     android:layout_marginLeft="@dimen/widget_margin_left"
@@ -11,7 +10,7 @@
     >
     
     <LinearLayout 
-        android:background="@color/main_background"
+        android:background="@drawable/timeline_feedcard_original_background_highlighted"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -36,7 +35,7 @@
 	        android:layout_height="match_parent"
 	        android:layout_weight="1"
 	        android:layout_gravity="center"
-	        android:background="#F8F8F8">
+	        >
 	        
 	        <ListView
 	            android:id="@+id/list"

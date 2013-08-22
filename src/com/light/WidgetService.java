@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -90,7 +91,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public RemoteViews getViewAt(int position) {
 		// Get the data for this position from the content provider
-		Log.i("GoGo", "更新第" + String.valueOf(position) + "个");
 		Status item = mStatus.get(mStatus.size() - position - 1);
 		
         final int item_layout_id = R.layout.widget_item;
@@ -103,7 +103,6 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         rv.setImageViewResource(R.id.logo, R.drawable.sina);
         // 更新头像
         if( StatusProcesser.INSTANCE.isBitmapReady(item.getUser().getProfileImageUrl()) ){
-        	Log.i("GoGo", "可以");
         	rv.setImageViewBitmap(R.id.user_pic, StatusProcesser.INSTANCE.getLruCacheImage(item.getUser().getProfileImageUrl()) );
         }
         // 更新微博图片
@@ -117,6 +116,26 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 					e.printStackTrace();
 				}
 			}
+        }
+        // 更新转发内容
+        if( item.getRetweetedStatus() != null ){
+        	Status retweeted_status = item.getRetweetedStatus();
+        	rv.setTextViewText(R.id.retweet_content_text, 
+        			Html.fromHtml(
+        					"<font color=\"#ff0000\">" + retweeted_status.getUser().getName() + ": </font>" +
+        					retweeted_status.getText())
+        	);
+        	if( retweeted_status.getPicUrls().length() > 0 ){
+            	JSONArray arr = retweeted_status.getPicUrls();
+            	for(int j=0; j<arr.length(); j++ ){
+    				try {
+    					if( StatusProcesser.INSTANCE.isBitmapReady(arr.getJSONObject(j).getString("thumbnail_pic")) )
+    						rv.setImageViewBitmap(R.id.retweet_image, StatusProcesser.INSTANCE.getLruCacheImage(arr.getJSONObject(j).getString("thumbnail_pic")) );
+    				} catch (JSONException e) {
+    					e.printStackTrace();
+    				}
+    			}
+            }
         }
         
         mRemoteViewList.add(rv);

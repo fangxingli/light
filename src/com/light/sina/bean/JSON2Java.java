@@ -12,6 +12,10 @@ public class JSON2Java{
 		mRoot = new JSONObject(mData);
 	}
 	
+	public JSON2Java(JSONObject obj)throws Exception{
+		mRoot = new JSONObject(mData);
+	}
+	
 	public Status[] getStatus()throws Exception{
 		Status[] ret = null;
 		if( mRoot.has("statuses") ){
@@ -27,6 +31,24 @@ public class JSON2Java{
 				ret[i].setRepostsCount(status_node.getJSONObject(i).getInt("reposts_count"));
 				ret[i].setAttitudesCount(status_node.getJSONObject(i).getInt("attitudes_count"));
 				ret[i].setPicUrls(status_node.getJSONObject(i).getJSONArray("pic_urls"));
+				// retweet处理
+				if( status_node.getJSONObject(i).has("retweeted_status") ){
+					JSONObject retweeted_json_obj = status_node.getJSONObject(i).getJSONObject("retweeted_status");
+					JSONObject retweeted_user_json = retweeted_json_obj.getJSONObject("user");
+					Status retweeted_status = new Status();
+					User retweeted_u = new User();
+					
+					retweeted_status.setText(retweeted_json_obj.getString("text"));
+					retweeted_status.setPicUrls(retweeted_json_obj.getJSONArray("pic_urls"));
+					
+					retweeted_u.setProfileImageUrl(retweeted_user_json.getString("profile_image_url"));
+					retweeted_u.setName(retweeted_user_json.getString("name"));
+					
+					retweeted_status.setUser(retweeted_u);
+					ret[i].setRetweetedStatus(retweeted_status);
+				}else{
+					ret[i].setRetweetedStatus(null);
+				}
 				
 				JSONObject user_json = status_node.getJSONObject(i).getJSONObject("user");
 				User u = new User();
