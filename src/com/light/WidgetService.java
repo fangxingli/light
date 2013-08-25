@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -125,6 +126,7 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         					"<font color=\"#ff0000\">" + retweeted_status.getUser().getName() + ": </font>" +
         					retweeted_status.getText())
         	);
+        	
         	if( retweeted_status.getPicUrls().length() > 0 ){
             	JSONArray arr = retweeted_status.getPicUrls();
             	for(int j=0; j<arr.length(); j++ ){
@@ -136,6 +138,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     				}
     			}
             }
+        }else{
+        	rv.setViewVisibility(R.id.content_retweeted_layout, View.GONE);
         }
         
         mRemoteViewList.add(rv);

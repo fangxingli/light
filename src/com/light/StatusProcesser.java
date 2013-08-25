@@ -124,6 +124,7 @@ public enum StatusProcesser{
 			            
 			            synchronized(mBitmapCache){
 			            	mBitmapCache.put(item, bitmap);
+			            	Log.i("GoGo", "图片大小" + item + ":" + String.valueOf(bitmap.getByteCount()));
 			            }
 			            Log.i("GoGo", "图片" + item + "下载完成");
 			        }catch (MalformedURLException e) {
@@ -164,14 +165,14 @@ public enum StatusProcesser{
 	
 	public boolean isBitmapReady(String uri){
 		synchronized(mBitmapCache){
-//				Log.i("GoGoL", "拿" + mBitmapCache.get(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8"))));
-				return mBitmapCache.get(uri) == null ? false : true;
+//			Log.i("GoGoL", "拿" + mBitmapCache.get(MessageDigest.getInstance("MD5").digest(uri.getBytes("UTF-8"))));
+			return mBitmapCache.get(uri) == null ? false : true;
 		}
 	}
 	
 	public Bitmap getLruCacheImage(String uri){
 		synchronized(mBitmapCache){
-				return mBitmapCache.get(uri);
+			return mBitmapCache.get(uri);
 		}
 	}
 	
